@@ -4,6 +4,7 @@ var maxZindex = 2;
 
 function MapMarker(name, icon, container, location_name, jsonfile){
 
+	// test dzialania;
 	this.name = name;
 	this.icon = icon;
 	this.location = location_name;
