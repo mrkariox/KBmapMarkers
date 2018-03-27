@@ -48,6 +48,18 @@
 					'tel' => '864 464 743'
 				)
 			)
+		),
+		'Cintra' => array(
+			'coordinates' => array(
+				'x' => 19.85,
+				'y' => 72.73
+			),
+			'members' => array(
+				'Cirilla' => array(
+					'email' => 'ciri@cintra.pl',
+					'tel' => '764 345 325'
+				)
+			)
 		)
 
 	);
