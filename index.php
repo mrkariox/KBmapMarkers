@@ -60,6 +60,18 @@
 					'tel' => '764 345 325'
 				)
 			)
+		),
+		'Novigrad' => array(
+			'coordinates' => array(
+				'x' => 24.22,
+				'y' => 41.74
+			),
+			'members' => array(
+				'Chapelle' => array(
+					'email' => 'chapelle@novigrad.pl',
+					'tel' => '523 753 853'
+				)
+			)
 		)
 
 	);
