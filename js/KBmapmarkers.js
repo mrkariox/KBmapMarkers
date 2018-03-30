@@ -26,6 +26,10 @@ function MapMarker(name, icon, container, location_name, jsonfile){
 		maxZindex++;
 	}
 
+	this.unsetCurrent = function(){
+		jQuery('[data-marker-name="'+ this.name +'"]').css('z-index', "2");
+	}
+
 	this.generateMarker = function(){
 		output = '<div class="KBmap__marker" data-marker-name="'+this.name+'" data-location="'+this.location+'" style="left: '+this.cordX+'%; top: '+this.cordY+'%"><img src="'+this.icon+'" alt="'+this.location+'"></div>'
 
@@ -98,6 +102,8 @@ function MarkerModal(linkedMapMarker){
 		openedModals.removeElement(this);
 
 		this.linkedMapMarker.deactivate();
+
+		this.linkedMapMarker.unsetCurrent();
 
 		if (openedModals.length < 1) {
 			maxZindex = 2;
