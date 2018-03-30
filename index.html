@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+		
+		<link href="css/style.css" rel="stylesheet">
+
+	</head>
+	<body>
+
+		<style>
+
+		@font-face {
+		  font-family: 'witcher';
+		  src: url('thewitcher-4.ttf')  format('truetype')
+		}
+
+		.KBmap__markerTitle{
+			font-family: witcher;
+			color: #56270c;
+		}
+		.KBmap__mapContainer, .KBmap__mapHolder{
+			height: 100vh;
+			overflow: hidden;
+			max-height: 100vh;
+		}
+		.KBmap__mapHolder img{
+		    width: auto;
+    		height: 100%;
+		}
+
+		body{
+			background-color: #c89867;
+			color: #392c20;
+			margin: 0px;
+		}
+
+
+		</style>
+
+		<section class="KBmap">
+			
+			<div class="KBmap__mapContainer">
+				<div class="KBmap__mapHolder">
+					<img src="mapa.jpg" alt="mapa">
+				</div>
+			</div>
+
+			<script type="text/javascript" src="js/KBmapmarkers.js"></script>
+			<script type="text/javascript" src="js/KBmapmarkersCords.js"></script>
+
+			<script>
+
+				// JSON with all map data;
+				var mapDataJSON = 
+				{
+				    "Kaer Morhen": {
+				        "coordinates": {
+				            "x": 54.25,
+				            "y": 18.59
+				        },
+				        "members": {
+				            "Vesemir": {
+				                "email": "vesemir@kaermorhen.pl",
+				                "tel": "942 422 144"
+				            }
+				        }
+				    },
+				    "Wyzima": {
+				        "coordinates": {
+				            "x": 32.15,
+				            "y": 53.34
+				        },
+				        "members": {
+				            "Król Foltest": {
+				                "email": "foltest@temeria.pl",
+				                "tel": "654 342 674"
+				            }
+				        }
+				    },
+				    "Vengerberg": {
+				        "coordinates": {
+				            "x": 49.93,
+				            "y": 53.93
+				        },
+				        "members": {
+				            "Yennefer": {
+				                "email": "yen@lozaczarodziejek.pl",
+				                "tel": "864 464 743"
+				            }
+				        }
+				    },
+				    "Cintra": {
+				        "coordinates": {
+				            "x": 19.85,
+				            "y": 72.73
+				        },
+				        "members": {
+				            "Cirilla": {
+				                "email": "ciri@cintra.pl",
+				                "tel": "764 345 325"
+				            }
+				        }
+				    },
+				    "Novigrad": {
+				        "coordinates": {
+				            "x": 24.22,
+				            "y": 41.74
+				        },
+				        "members": {
+				            "Chapelle": {
+				                "email": "chapelle@novigrad.pl",
+				                "tel": "523 753 853"
+				            }
+				        }
+				    }
+				};			
+
+				(function($) {
+
+					// Show all map markers on map
+					$(document).ready(function(){ 
+
+						var icon = 'map-marker.svg';
+
+						showAllMapMarkers(icon, '.KBmap__mapHolder', mapDataJSON); // this callback function is stored in mapmarkers.js file
+
+					});
+
+				})(jQuery);
+
+			</script>
+
+		</section>
+		
+	</body>
+</html>

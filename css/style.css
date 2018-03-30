@@ -3,7 +3,7 @@
  *  // Map Markers CSS
  *
  */
-.prometMap__mapContainer {
+.KBmap__mapContainer {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
@@ -12,41 +12,17 @@
           align-items: center;
   -webkit-box-pack: center;
       -ms-flex-pack: center;
-          justify-content: center;
-  padding-left: 15px;
-  padding-right: 15px; }
+          justify-content: center; }
 
-.prometMap__mapHolder {
+.KBmap__mapHolder {
   display: inline-block;
   position: relative; }
-  .prometMap__mapHolder svg {
+  .KBmap__mapHolder svg {
     max-width: 100%; }
-.prometMap__mapHolder img{
+.KBmap__mapHolder img{
   max-width: 100%;
   width: 100%;
 }
-.prometMapLegend {
-  background-color: #f4f4f4; }
-
-.prometMapLegend__member {
-  margin-bottom: 1em; }
-
-.prometMapLegend__item{
-  margin-bottom: 15px;
-}
-
-.prometMapLegend__item .prometMapLegend__member:last-child {
-  margin-bottom: 0px; }
-
-.prometMapLegend__item .sectionHeader {
-  cursor: pointer; }
-
-.prometMapLegend__container {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap; }
 
 @-webkit-keyframes mapMarkerAnimation {
   0% {
@@ -70,20 +46,20 @@
     -webkit-transform: translateY(0px);
             transform: translateY(0px); } }
 
-.prometMap__marker {
+.KBmap__marker {
   position: absolute;
   -webkit-transform: translate(-50%, -100%);
           transform: translate(-50%, -100%);
   top: 42%;
   left: 69%;
   z-index: 1; }
-  .prometMap__marker.current {
+  .KBmap__marker.current {
     z-index: 2; }
-  .prometMap__marker img {
+  .KBmap__marker img {
     cursor: pointer;
     position: relative;
     z-index: 3; }
-    .prometMap__marker img:hover {
+    .KBmap__marker img:hover {
       -webkit-animation-name: mapMarkerAnimation;
               animation-name: mapMarkerAnimation;
       -webkit-animation-duration: .5s;
@@ -91,7 +67,7 @@
       -webkit-animation-iteration-count: infinite;
               animation-iteration-count: infinite; }
 
-.prometMap__markerContent {
+.KBmap__markerContent {
   width: 320px;
   background-color: #9ea18e;
   display: inline-block;
@@ -103,16 +79,26 @@
   position: absolute;
   bottom: 49%;
   z-index: 1; }
-  .prometMap__markerContent .sectionHeader {
+  .KBmap__markerContent .KBmap__markerTitle {
         margin-top: 0px;
     margin-bottom: .5em; }
 
-.prometMap_markerMember {
+.KBmap__markerMember {
   margin-bottom: .5em; }
 
-.prometMap__close {
+.KBmap__markerClose {
   position: absolute;
   top: 10px;
   right: 10px;
   cursor: pointer;
   color: #231f20; }
+
+.KBmap_cords {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  background-color: #e7b786;
+  border: 2px solid #56270c;
+  padding: 2px 5px;
+  pointer-events: none;
+}
