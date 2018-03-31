@@ -1,4 +1,4 @@
-// array storing all currently added map markers;
+// array storing all currently added maps;
 var addedKBmaps = [];
 
 function Map(name, mapDataJSON){
@@ -38,9 +38,6 @@ function Map(name, mapDataJSON){
 			this.openedModals[i].closeModal()
 		};
 	}
-
-	// add this map to array with all added maps in window
-	addedKBmaps.push(this);
 
 }
 
