@@ -6,22 +6,17 @@ function Map(name, mapDataJSON){
 
 	this.name = name;
 	this.mapMarkers = [];
-	this.addedMarkers = []; // array for markers added to map (and visible on map)
 	this.maxZindex = 2;
 	this.openedModals = [];
 	this.container =  jQuery("#"+ this.name + " .KBmap__mapContainer .KBmap__mapHolder");
 	this.mapDataJSON = mapDataJSON;
-
-	this.getMarker = function(marker){
-		return getKBmapMarker(this, marker);
-	}
 
 	this.showAllMapMarkers = function(icon){
 		var icon = icon;
 
 		for (locationName in this.mapDataJSON){
 
-			// generate unique name for map marker (checks addedMarkers array for duplicates);
+			// generate unique name for map marker (checks mapMarkers array for duplicates);
 			var markerName = generateUniqueMarkerName(this);
 
 			if (markerName) {
@@ -83,7 +78,7 @@ function MapMarker(name, icon, map, location_name, jsonfile){
 	this.removeMarker = function(){
 
 		jQuery('[data-marker-name="'+this.name+'"]').remove();
-		this.map.addedMarkers.removeElement(this);
+		this.map.mapMarkers.removeElement(this);
 
 		this.map.openedModals.removeElement(this.modal);
 	}
@@ -93,7 +88,7 @@ function MapMarker(name, icon, map, location_name, jsonfile){
 		this.markerContainer.append(this.generateMarker());
 
 		// add currently generated marker to array with all generated markers;
-		this.map.addedMarkers.push(this);
+		this.map.mapMarkers.push(this);
 
 	}
 
@@ -255,13 +250,13 @@ function generateUniqueMarkerName(map){
 
 	var infiniteLoopCheck = 0;
 
-	while (map.addedMarkers.indexOf(window[objname])!= -1) {
+	while (map.mapMarkers.indexOf(window[objname])!= -1) {
 
 		objname = generateName(namebase);
 
 		infiniteLoopCheck++;
 
-		if (infiniteLoopCheck > addedMarkers.length * 100) {
+		if (infiniteLoopCheck > mapMarkers.length * 100) {
 			console.error('Can not generate unique name for MapMarker object. Change max number in MapMarker object name [function generateName()]. Default max: 1000');
 			return false;
 		};
@@ -276,16 +271,6 @@ function getKBmap(name){
 	for (var i=0, iLen=addedKBmaps.length; i<iLen; i++) {
 
 		if (addedKBmaps[i].name == name) return addedKBmaps[i];
-
-	}
-
-}
-
-function getKBmapMarker(map, marker){
-
-	for (var i=0, iLen=map.addedMarkers.length; i<iLen; i++) {
-
-		if (map.addedMarkers[i].name == marker) return map.addedMarkers[i];
 
 	}
 
@@ -314,7 +299,7 @@ jQuery( document ).ready(function() {
 		var clickedMarkerName = jQuery(this).parent().attr('data-marker-name');
 		var clickedMarkerMapName = jQuery(this).parent().parent().parent().parent().attr('id');
 
-		jQuery.event.trigger('markerClick', getKBmapMarker(getKBmap(clickedMarkerMapName), clickedMarkerName));
+		jQuery.event.trigger('markerClick', getKBmap(clickedMarkerMapName).mapMarkers[clickedMarkerName]);
 
 	});
 
@@ -326,7 +311,7 @@ jQuery( document ).ready(function() {
 		var clickedMarkerName = jQuery(this).parent().parent().attr('data-marker-name');
 		var clickedMarkerMapName = jQuery(this).parent().parent().parent().parent().parent().attr('id');
 
-		jQuery.event.trigger('markerClose', getKBmapMarker(getKBmap(clickedMarkerMapName), clickedMarkerName));
+		jQuery.event.trigger('markerClose', getKBmap(clickedMarkerMapName).mapMarkers[clickedMarkerName]);
 
 	});
 
@@ -337,7 +322,7 @@ jQuery( document ).ready(function() {
 		var mapMarkerParent = jQuery(this).parent().attr('data-marker-name');
 		var mapMarkerMapParent= jQuery(this).parent().parent().parent().parent().attr('id');
 
-		getKBmapMarker(getKBmap(mapMarkerMapParent), mapMarkerParent).setCurrent();
+		getKBmap(mapMarkerMapParent).mapMarkers[mapMarkerParent].setCurrent()
 
 	});
 
