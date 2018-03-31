@@ -291,68 +291,71 @@ function getKBmapMarker(map, marker){
 
 }
 
-// on resize chceck if modal is fully on screen, if not change its position
-jQuery(window).resize(function(){
+jQuery( document ).ready(function() {
 
-	addedKBmaps.forEach(function(map){
+	// on resize chceck if modal is fully on screen, if not change its position
+	jQuery(window).resize(function(){
 
-		map.openedModals.forEach(function(modal){
+		addedKBmaps.forEach(function(map){
 
-			modal.clearPosition();
+			map.openedModals.forEach(function(modal){
+
+				modal.clearPosition();
+
+			});
 
 		});
+		
+	});
+
+	// on map marker click trigger event markerClick (adding new event)
+	jQuery('body').on('click', '.KBmap__marker img', function(){
+
+		var clickedMarkerName = jQuery(this).parent().attr('data-marker-name');
+		var clickedMarkerMapName = jQuery(this).parent().parent().parent().parent().attr('id');
+
+		jQuery.event.trigger('markerClick', getKBmapMarker(getKBmap(clickedMarkerMapName), clickedMarkerName));
 
 	});
-	
-});
 
-// on map marker click trigger event markerClick (adding new event)
-jQuery('body').on('click', '.KBmap__marker img', function(){
+	// on "x" click in modal block close modal
+	jQuery('body').on('click', '.KBmap__markerClose', function(event){
 
-	var clickedMarkerName = jQuery(this).parent().attr('data-marker-name');
-	var clickedMarkerMapName = jQuery(this).parent().parent().parent().parent().attr('id');
+		event.stopPropagation();
 
-	jQuery.event.trigger('markerClick', getKBmapMarker(getKBmap(clickedMarkerMapName), clickedMarkerName));
+		var clickedMarkerName = jQuery(this).parent().parent().attr('data-marker-name');
+		var clickedMarkerMapName = jQuery(this).parent().parent().parent().parent().parent().attr('id');
 
-});
+		jQuery.event.trigger('markerClose', getKBmapMarker(getKBmap(clickedMarkerMapName), clickedMarkerName));
 
-// on "x" click in modal block close modal
-jQuery('body').on('click', '.KBmap__markerClose', function(event){
+	});
 
-	event.stopPropagation();
+	// on modal body click add current class to it and remove that class from all other opened modals 
+	// (current modal is always on top of others)
+	jQuery('body').on('click', '.KBmap__markerContent', function(){
 
-	var clickedMarkerName = jQuery(this).parent().parent().attr('data-marker-name');
-	var clickedMarkerMapName = jQuery(this).parent().parent().parent().parent().parent().attr('id');
+		var mapMarkerParent = jQuery(this).parent().attr('data-marker-name');
+		var mapMarkerMapParent= jQuery(this).parent().parent().parent().parent().attr('id');
 
-	jQuery.event.trigger('markerClose', getKBmapMarker(getKBmap(clickedMarkerMapName), clickedMarkerName));
+		getKBmapMarker(getKBmap(mapMarkerMapParent), mapMarkerParent).setCurrent();
 
-});
+	});
 
-// on modal body click add current class to it and remove that class from all other opened modals 
-// (current modal is always on top of others)
-jQuery('body').on('click', '.KBmap__markerContent', function(){
+	// on markerClick event run function that opens linked modal
+	jQuery(document).on('markerClick', function(event, mapMarker){
 
-	var mapMarkerParent = jQuery(this).parent().attr('data-marker-name');
-	var mapMarkerMapParent= jQuery(this).parent().parent().parent().parent().attr('id');
+		mapMarker.modal.toggleModal();
 
-	getKBmapMarker(getKBmap(mapMarkerMapParent), mapMarkerParent).setCurrent();
+	});
 
-});
+	// on markerClose event
+	jQuery(document).on('markerClose', function(event, mapMarker){
 
-// on markerClick event run function that opens linked modal
-jQuery(document).on('markerClick', function(event, mapMarker){
+		mapMarker.modal.closeModal();
 
-	mapMarker.modal.toggleModal();
+	});
 
-});
-
-// on markerClose event
-jQuery(document).on('markerClose', function(event, mapMarker){
-
-	mapMarker.modal.closeModal();
-
-});
-
+}); // document ready end
 
 /*
  *
@@ -373,3 +376,4 @@ function createKBmap(name, mapsrc, mapDataJSON){
 	addedKBmaps.push(window[name]);
 
 }
+

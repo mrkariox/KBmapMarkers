@@ -4,6 +4,9 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
 		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+		<script type="text/javascript" src="js/KBmapmarkers.js"></script>
+		<script type="text/javascript" src="js/KBmapmarkersCords.js"></script>
 		
 		<link href="css/style.css" rel="stylesheet">
 
@@ -43,97 +46,93 @@
 		</style>
 
 		<section class="KBmap" id="KBtestmap">
-			
-			
-
-			<script type="text/javascript" src="js/KBmapmarkers.js"></script>
-			<script type="text/javascript" src="js/KBmapmarkersCords.js"></script>
-
-			<script>
-
-				// JSON with all map data;
-				var mapDataJSON = 
-				{
-				    "Kaer Morhen": {
-				        "coordinates": {
-				            "x": 54.25,
-				            "y": 18.59
-				        },
-				        "contentitems": {
-				            "Vesemir": {
-				                "email": "vesemir@kaermorhen.pl",
-				                "tel": "942 422 144"
-				            }
-				        }
-				    },
-				    "Wyzima": {
-				        "coordinates": {
-				            "x": 32.15,
-				            "y": 53.34
-				        },
-				        "contentitems": {
-				            "Król Foltest": {
-				                "email": "foltest@temeria.pl",
-				                "tel": "654 342 674"
-				            }
-				        }
-				    },
-				    "Vengerberg": {
-				        "coordinates": {
-				            "x": 49.93,
-				            "y": 53.93
-				        },
-				        "contentitems": {
-				            "Yennefer": {
-				                "email": "yen@lozaczarodziejek.pl",
-				                "tel": "864 464 743"
-				            }
-				        }
-				    },
-				    "Cintra": {
-				        "coordinates": {
-				            "x": 19.85,
-				            "y": 72.73
-				        },
-				        "contentitems": {
-				            "Cirilla": {
-				                "email": "ciri@cintra.pl",
-				                "tel": "764 345 325"
-				            }
-				        }
-				    },
-				    "Novigrad": {
-				        "coordinates": {
-				            "x": 24.22,
-				            "y": 41.74
-				        },
-				        "contentitems": {
-				            "Chapelle": {
-				                "email": "chapelle@novigrad.pl",
-				                "tel": "523 753 853"
-				            }
-				        }
-				    }
-				};			
-
-				(function($) {
-
-					// Show all map markers on map
-					$(document).ready(function(){ 
-
-						var icon = 'map-marker.svg';
-
-						createKBmap('KBtestmap', 'mapa.jpg', mapDataJSON);
-
-						KBtestmap.showAllMapMarkers(icon);
-
-					});
-
-				})(jQuery);
-
-			</script>
 
 		</section>
 		
 	</body>
+
+	<script>
+
+		// JSON with all map data;
+		var mapDataJSON = 
+		{
+		    "Kaer Morhen": {
+		        "coordinates": {
+		            "x": 54.25,
+		            "y": 18.59
+		        },
+		        "contentitems": {
+		            "Vesemir": {
+		                "email": "vesemir@kaermorhen.pl",
+		                "tel": "942 422 144"
+		            }
+		        }
+		    },
+		    "Wyzima": {
+		        "coordinates": {
+		            "x": 32.15,
+		            "y": 53.34
+		        },
+		        "contentitems": {
+		            "Król Foltest": {
+		                "email": "foltest@temeria.pl",
+		                "tel": "654 342 674"
+		            }
+		        }
+		    },
+		    "Vengerberg": {
+		        "coordinates": {
+		            "x": 49.93,
+		            "y": 53.93
+		        },
+		        "contentitems": {
+		            "Yennefer": {
+		                "email": "yen@lozaczarodziejek.pl",
+		                "tel": "864 464 743"
+		            }
+		        }
+		    },
+		    "Cintra": {
+		        "coordinates": {
+		            "x": 19.85,
+		            "y": 72.73
+		        },
+		        "contentitems": {
+		            "Cirilla": {
+		                "email": "ciri@cintra.pl",
+		                "tel": "764 345 325"
+		            }
+		        }
+		    },
+		    "Novigrad": {
+		        "coordinates": {
+		            "x": 24.22,
+		            "y": 41.74
+		        },
+		        "contentitems": {
+		            "Chapelle": {
+		                "email": "chapelle@novigrad.pl",
+		                "tel": "523 753 853"
+		            }
+		        }
+		    }
+		};			
+
+		(function($) {
+
+			// Show all map markers on map
+			$(document).ready(function(){ 
+
+				var icon = 'map-marker.svg';
+
+				createKBmap('KBtestmap', 'mapa.jpg', mapDataJSON);
+
+				KBtestmap.showAllMapMarkers(icon);
+
+			});
+
+		})(jQuery);
+
+	</script>
+
 </html>
