@@ -1,30 +1,29 @@
-var mapMarker_sourcemap = document.querySelector('.KBmap__mapHolder');
+var mapMarker_sourcemap;
 var cords;
 
-mapMarker_sourcemap.onmouseover = function(e){
+jQuery('body').on('mouseover', '.KBmap__mapHolder', function(){
 
-	if (mapMarker_sourcemap.querySelector('.KBmap_cords')==null) {
+	var output = "<div class='KBmap_cords'></div>";
 
-		cords = document.createElement('div');
-		cords.setAttribute('class', 'KBmap_cords');
+	if (!jQuery(jQuery(this).attr('class') + " .KBmap_cords").length) {
+		jQuery(this).append(output);
+	}
 
-		mapMarker_sourcemap.appendChild(cords);
+});
 
-	} 
+jQuery('body').on('mouseleave', '.KBmap__mapHolder', function(){
 
-}
+	jQuery('.KBmap_cords').remove();
 
-mapMarker_sourcemap.onmouseleave = function(e){
+});
 
-	mapMarker_sourcemap.querySelector('.KBmap_cords').remove();
+jQuery('body').on('mousemove', '.KBmap__mapHolder', function(e){
 
-}
+	mapMarker_sourcemap = document.querySelector('.KBmap__mapHolder');
 
-mapMarker_sourcemap.onmousemove = function(e){
+	jQuery('.KBmap_cords').html("<strong>pos X: </strong>" + mousePositionElement(e).x + " " + "<strong>pos Y: </strong>" + mousePositionElement(e).y);
 
-	document.querySelector('.KBmap_cords').innerHTML = "<strong>pos X: </strong>" + mousePositionElement(e).x + " " + "<strong>pos Y: </strong>" + mousePositionElement(e).y;
-
-}
+});
 
 // Which HTML element is the target of the event
 function mouseTarget(e) {

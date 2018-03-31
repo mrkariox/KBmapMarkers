@@ -44,11 +44,7 @@
 
 		<section class="KBmap" id="KBtestmap">
 			
-			<div class="KBmap__mapContainer">
-				<div class="KBmap__mapHolder">
-					<img src="mapa.jpg" alt="mapa">
-				</div>
-			</div>
+			
 
 			<script type="text/javascript" src="js/KBmapmarkers.js"></script>
 			<script type="text/javascript" src="js/KBmapmarkersCords.js"></script>
@@ -127,10 +123,10 @@
 
 						var icon = 'map-marker.svg';
 
-						createKBmap('KBtestmap', mapDataJSON);
+						createKBmap('KBtestmap', 'mapa.jpg', mapDataJSON);
 
-						getKBmap('KBtestmap').showAllMapMarkers(icon);
-						
+						KBtestmap.showAllMapMarkers(icon);
+
 					});
 
 				})(jQuery);

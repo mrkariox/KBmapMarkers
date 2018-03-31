@@ -6,11 +6,15 @@ function Map(name, mapDataJSON){
 
 	this.name = name;
 	this.mapMarkers = [];
-	this.addedMarkers = [];
+	this.addedMarkers = []; // array for markers added to map (and visible on map)
 	this.maxZindex = 2;
 	this.openedModals = [];
 	this.container =  jQuery("#"+ this.name + " .KBmap__mapContainer .KBmap__mapHolder");
 	this.mapDataJSON = mapDataJSON;
+
+	this.getMarker = function(marker){
+		return getKBmapMarker(this, marker);
+	}
 
 	this.showAllMapMarkers = function(icon){
 		var icon = icon;
@@ -39,7 +43,7 @@ function Map(name, mapDataJSON){
 		};
 	}
 
-}
+} // Map class end
 
 function MapMarker(name, icon, map, location_name, jsonfile){
 
@@ -94,7 +98,7 @@ function MapMarker(name, icon, map, location_name, jsonfile){
 	}
 
 
-} // MapMarker class endw
+} // MapMarker class end
 
 function MarkerModal(linkedMapMarker){
 
@@ -356,8 +360,16 @@ jQuery(document).on('markerClose', function(event, mapMarker){
  *
  */
 
-function createKBmap(name, mapDataJSON){
+function createKBmap(name, mapsrc, mapDataJSON){
 
-	addedKBmaps.push(new Map(name, mapDataJSON));
+	var mapImg = mapsrc;
+
+	var output = '<div class="KBmap__mapContainer"><div class="KBmap__mapHolder"><img src="' + mapImg + '" alt="mapa"></div></div>';
+
+	jQuery('#'+name).append(output);
+
+	window[name] = new Map(name, mapDataJSON);
+
+	addedKBmaps.push(window[name]);
 
 }
