@@ -42,7 +42,7 @@
 
 		</style>
 
-		<section class="KBmap">
+		<section class="KBmap" id="KBtestmap">
 			
 			<div class="KBmap__mapContainer">
 				<div class="KBmap__mapHolder">
@@ -63,7 +63,7 @@
 				            "x": 54.25,
 				            "y": 18.59
 				        },
-				        "members": {
+				        "contentitems": {
 				            "Vesemir": {
 				                "email": "vesemir@kaermorhen.pl",
 				                "tel": "942 422 144"
@@ -75,7 +75,7 @@
 				            "x": 32.15,
 				            "y": 53.34
 				        },
-				        "members": {
+				        "contentitems": {
 				            "Król Foltest": {
 				                "email": "foltest@temeria.pl",
 				                "tel": "654 342 674"
@@ -87,7 +87,7 @@
 				            "x": 49.93,
 				            "y": 53.93
 				        },
-				        "members": {
+				        "contentitems": {
 				            "Yennefer": {
 				                "email": "yen@lozaczarodziejek.pl",
 				                "tel": "864 464 743"
@@ -99,7 +99,7 @@
 				            "x": 19.85,
 				            "y": 72.73
 				        },
-				        "members": {
+				        "contentitems": {
 				            "Cirilla": {
 				                "email": "ciri@cintra.pl",
 				                "tel": "764 345 325"
@@ -111,7 +111,7 @@
 				            "x": 24.22,
 				            "y": 41.74
 				        },
-				        "members": {
+				        "contentitems": {
 				            "Chapelle": {
 				                "email": "chapelle@novigrad.pl",
 				                "tel": "523 753 853"
@@ -127,7 +127,11 @@
 
 						var icon = 'map-marker.svg';
 
-						showAllMapMarkers(icon, '.KBmap__mapHolder', mapDataJSON); // this callback function is stored in mapmarkers.js file
+						createKBmap('KBtestmap', mapDataJSON);
+
+						getKBmap('KBtestmap').showAllMapMarkers(icon);
+
+						// showAllMapMarkers(icon, '.KBmap__mapHolder', mapDataJSON); // this callback function is stored in mapmarkers.js file
 
 					});
 

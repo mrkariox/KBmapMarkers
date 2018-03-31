@@ -1,16 +1,59 @@
 // array storing all currently added map markers;
-var addedMarkers = [];
-var maxZindex = 2;
+var addedKBmaps = [];
 
-function MapMarker(name, icon, container, location_name, jsonfile){
+function Map(name, mapDataJSON){
 
+
+	this.name = name;
+	this.mapMarkers = [];
+	this.addedMarkers = [];
+	this.maxZindex = 2;
+	this.openedModals = [];
+	this.container =  jQuery("#"+ this.name + " .KBmap__mapContainer .KBmap__mapHolder");
+	this.mapDataJSON = mapDataJSON;
+
+	this.showAllMapMarkers = function(icon){
+		var icon = icon;
+
+		for (locationName in this.mapDataJSON){
+
+			// generate unique name for map marker (checks addedMarkers array for duplicates);
+			var markerName = generateUniqueMarkerName(this);
+
+			if (markerName) {
+
+				this.mapMarkers[markerName] = new MapMarker(markerName, icon, this, locationName, this.mapDataJSON);
+
+				this.mapMarkers[markerName].show();
+
+			}else{
+				console.error("MapMarker for location: " + locationName + " was not added to map because of error.");
+			}	
+
+		}
+	}
+
+	this.closeAllModals = function(){
+		for (var i = this.openedModals.length-1; i >= 0; i--) {
+			this.openedModals[i].closeModal()
+		};
+	}
+
+	// add this map to array with all added maps in window
+	addedKBmaps.push(this);
+
+}
+
+function MapMarker(name, icon, map, location_name, jsonfile){
+
+	this.map = map;
 	this.name = name;
 	this.icon = icon;
 	this.location = location_name;
 	this.dataJSON = jsonfile;
 	this.cordX = this.dataJSON[this.location]['coordinates']['x'];
 	this.cordY = this.dataJSON[this.location]['coordinates']['y'];
-	this.markerContainer = container; // jquery map marker container object
+	this.markerContainer = this.map.container; // jquery map marker container object
 	this.modal = new MarkerModal(this);
 	
 	this.activate = function(){
@@ -22,8 +65,8 @@ function MapMarker(name, icon, container, location_name, jsonfile){
 	}
 
 	this.setCurrent = function(){
-		jQuery('[data-marker-name="'+ this.name +'"]').css('z-index', maxZindex);
-		maxZindex++;
+		jQuery('[data-marker-name="'+ this.name +'"]').css('z-index', this.map.maxZindex);
+		this.map.maxZindex++;
 	}
 
 	this.unsetCurrent = function(){
@@ -39,10 +82,9 @@ function MapMarker(name, icon, container, location_name, jsonfile){
 	this.removeMarker = function(){
 
 		jQuery('[data-marker-name="'+this.name+'"]').remove();
-		addedMarkers.removeElement(this);
-		delete window[this.name];
+		this.map.addedMarkers.removeElement(this);
 
-		openedModals.removeElement(this.modal);
+		this.map.openedModals.removeElement(this.modal);
 	}
 
 	this.show = function(){
@@ -50,20 +92,17 @@ function MapMarker(name, icon, container, location_name, jsonfile){
 		this.markerContainer.append(this.generateMarker());
 
 		// add currently generated marker to array with all generated markers;
-		addedMarkers.push(this);
+		this.map.addedMarkers.push(this);
 
 	}
 
 
 } // MapMarker class endw
 
-// array storing all currently opened modals;
-var openedModals = [];
-
 function MarkerModal(linkedMapMarker){
 
 	this.linkedMapMarker = linkedMapMarker; // linked to modal map marker object
-	this.members = this.linkedMapMarker.dataJSON[this.linkedMapMarker.location]['members'];
+	this.contentitems = this.linkedMapMarker.dataJSON[this.linkedMapMarker.location]['contentitems'];
 	this.positionedElemOffset = null;
 	
 	self = this;
@@ -71,14 +110,14 @@ function MarkerModal(linkedMapMarker){
 	this.generateModal = function(){
 		output = '<div  class="KBmap__markerContent"><div class="KBmap__markerClose"><i class="fa fa-times" aria-hidden="true"></i></div><h3 class="KBmap__markerTitle">' + this.linkedMapMarker.location + '</h3>';
 
-		for (member in this.members){
-			output += '<div class="KBmap__markerMember">' + '<div class="KBmap__markerContentRow">' + member + '</div>';
+		for (contentitem in this.contentitems){
+			output += '<div class="KBmap__markerContentItem">' + '<div class="KBmap__markerContentRow">' + contentitem + '</div>';
 
-			for (member_field in this.members[member]) {
+			for (contentitem_field in this.contentitems[contentitem]) {
 
 				// if field is not empty show it
-				if (this.members[member][member_field]) {
-					output += '<div class="KBmap__markerContentRow">' + member_field + ": " + this.members[member][member_field] + "</div>";
+				if (this.contentitems[contentitem][contentitem_field]) {
+					output += '<div class="KBmap__markerContentRow">' + contentitem_field + ": " + this.contentitems[contentitem][contentitem_field] + "</div>";
 				}
 				
 			}
@@ -99,14 +138,14 @@ function MarkerModal(linkedMapMarker){
 
 	this.closeModal = function(){
 		jQuery('[data-marker-name="'+ this.linkedMapMarker.name +'"] .KBmap__markerContent').remove();
-		openedModals.removeElement(this);
+		this.linkedMapMarker.map.openedModals.removeElement(this);
 
 		this.linkedMapMarker.deactivate();
 
 		this.linkedMapMarker.unsetCurrent();
 
-		if (openedModals.length < 1) {
-			maxZindex = 2;
+		if (this.linkedMapMarker.map.openedModals.length < 1) {
+			this.linkedMapMarker.map.maxZindex = 2;
 		};
 
 	}
@@ -121,7 +160,7 @@ function MarkerModal(linkedMapMarker){
 		jQuery('[data-marker-name="' + this.linkedMapMarker.name + '"]').append(this.generateModal());		
 
 		// add currently opened modal to array with all opened modals;
-		openedModals.push(this);					
+		this.linkedMapMarker.map.openedModals.push(this);					
 
 		// center opened modal on map marker (css);
 		this.clearPosition();
@@ -208,14 +247,14 @@ function generateName(namebase){
 	return namebase+Math.floor((Math.random() * 1000) + 1);
 }
 
-function generateUniqueMarkerName(){
+function generateUniqueMarkerName(map){
 
 	var namebase = 'mapMarker';
 	var objname = generateName(namebase);
 
 	var infiniteLoopCheck = 0;
 
-	while (addedMarkers.indexOf(window[objname])!= -1) {
+	while (map.addedMarkers.indexOf(window[objname])!= -1) {
 
 		objname = generateName(namebase);
 
@@ -231,19 +270,48 @@ function generateUniqueMarkerName(){
 
 }
 
+function getKBmap(name){
+
+	for (var i=0, iLen=addedKBmaps.length; i<iLen; i++) {
+
+		if (addedKBmaps[i].name == name) return addedKBmaps[i];
+
+	}
+
+}
+
+function getKBmapMarker(map, marker){
+
+	for (var i=0, iLen=map.addedMarkers.length; i<iLen; i++) {
+
+		if (map.addedMarkers[i].name == marker) return map.addedMarkers[i];
+
+	}
+
+}
+
 // on resize chceck if modal is fully on screen, if not change its position
-jQuery(window).resize(function(){	
-	openedModals.forEach(function(modal){
-		modal.clearPosition();
+jQuery(window).resize(function(){
+
+	addedKBmaps.forEach(function(map){
+
+		map.openedModals.forEach(function(modal){
+
+			modal.clearPosition();
+
+		});
+
 	});
+	
 });
 
 // on map marker click trigger event markerClick (adding new event)
 jQuery('body').on('click', '.KBmap__marker img', function(){
 
-	var clickedMarker = jQuery(this).parent().attr('data-marker-name');
+	var clickedMarkerName = jQuery(this).parent().attr('data-marker-name');
+	var clickedMarkerMapName = jQuery(this).parent().parent().parent().parent().attr('id');
 
-	jQuery.event.trigger('markerClick', window[clickedMarker]);
+	jQuery.event.trigger('markerClick', getKBmapMarker(getKBmap(clickedMarkerMapName), clickedMarkerName));
 
 });
 
@@ -252,9 +320,10 @@ jQuery('body').on('click', '.KBmap__markerClose', function(event){
 
 	event.stopPropagation();
 
-	var clickedMarker = jQuery(this).parent().parent().attr('data-marker-name');
+	var clickedMarkerName = jQuery(this).parent().parent().attr('data-marker-name');
+	var clickedMarkerMapName = jQuery(this).parent().parent().parent().parent().parent().attr('id');
 
-	jQuery.event.trigger('markerClose', window[clickedMarker]);
+	jQuery.event.trigger('markerClose', getKBmapMarker(getKBmap(clickedMarkerMapName), clickedMarkerName));
 
 });
 
@@ -263,8 +332,9 @@ jQuery('body').on('click', '.KBmap__markerClose', function(event){
 jQuery('body').on('click', '.KBmap__markerContent', function(){
 
 	var mapMarkerParent = jQuery(this).parent().attr('data-marker-name');
+	var mapMarkerMapParent= jQuery(this).parent().parent().parent().parent().attr('id');
 
-	window[mapMarkerParent].setCurrent();
+	getKBmapMarker(getKBmap(mapMarkerMapParent), mapMarkerParent).setCurrent();
 
 });
 
@@ -282,37 +352,15 @@ jQuery(document).on('markerClose', function(event, mapMarker){
 
 });
 
+
 /*
  *
  *  // Required functionality methods and functions end
  *
  */
 
+function createKBmap(name, mapDataJSON){
 
-// show all markers on map function
-function showAllMapMarkers(icon, container, mapDataJSON){
-	var icon = icon;
+	addedKBmaps.push(new Map(name, mapDataJSON));
 
-	for (locationName in mapDataJSON){
-
-		// generate unique name for map marker (checks addedMarkers array for duplicates);
-		markerName = generateUniqueMarkerName();
-
-		if (markerName) {
-
-			window[markerName] = new MapMarker(markerName, icon, jQuery(container), locationName, mapDataJSON);
-
-			window[markerName].show();
-
-		}else{
-			console.error("MapMarker for location: " + locationName + " was not added to map because of error.");
-		}	
-
-	}
-}
-
-function closeAllModals(){
-	for (var i = openedModals.length-1; i >= 0; i--) {
-		openedModals[i].closeModal()
-	};
 }
