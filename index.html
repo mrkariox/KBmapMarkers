@@ -7,7 +7,7 @@
 
 		<script type="text/javascript" src="js/KBmapmarkers.js"></script>
 		<script type="text/javascript" src="js/KBmapmarkersCords.js"></script>
-		
+
 		<link href="css/KBmapmarkers.css" rel="stylesheet">
 
 	</head>
@@ -116,7 +116,22 @@
 		            }
 		        }
 		    }
-		};			
+		};		
+
+		var json = 
+		{
+			"mapMarker190": {
+				"cordX": "50.42",
+				"cordY": "52.12",
+				"icon": "map-marker.svg",
+				"modal": {
+					"title": "wyzima",
+					"content": "test contentu"
+				}
+			}
+		}
+
+		var testjson = "<p class='test'>Tekst</p>";
 
 		(function($) {
 
@@ -125,9 +140,9 @@
 
 				var icon = 'map-marker.svg';
 
-				createKBmap('KBtestmap', 'mapa.jpg', mapDataJSON);
+				createKBmap('KBtestmap', 'mapa.jpg');
 
-				KBtestmap.showAllMapMarkers(icon);
+				// KBtestmap.showAllMapMarkers(icon);
 
 			});
 

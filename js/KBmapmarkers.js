@@ -1,7 +1,7 @@
 // array storing all currently added maps;
 var addedKBmaps = [];
 
-function Map(name, mapDataJSON){
+function Map(name){
 
 
 	this.name = name;
@@ -11,26 +11,40 @@ function Map(name, mapDataJSON){
 	this.container =  jQuery("#"+ this.name + " .KBmap__mapContainer .KBmap__mapHolder");
 	this.mapDataJSON = mapDataJSON;
 
-	this.showAllMapMarkers = function(icon){
-		var icon = icon;
+	this.addMarker = function(icon, cordX, cordY){
 
-		for (locationName in this.mapDataJSON){
+		var markerName = generateUniqueMarkerName(this);
 
-			// generate unique name for map marker (checks mapMarkers array for duplicates);
-			var markerName = generateUniqueMarkerName(this);
+		this.mapMarkers[markerName] = new MapMarker(markerName, icon, cordX, cordY, this);
 
-			if (markerName) {
+	}
 
-				this.mapMarkers[markerName] = new MapMarker(markerName, icon, this, locationName, this.mapDataJSON);
-
-				this.mapMarkers[markerName].show();
-
-			}else{
-				console.error("MapMarker for location: " + locationName + " was not added to map because of error.");
-			}	
-
+	this.importJSON = function(mapDataJSON){
+		for (elem in mapDataJSON){
+			console.log(mapDataJSON[elem].icon);
 		}
 	}
+
+	// this.showAllMapMarkers = function(icon){
+	// 	var icon = icon;
+
+	// 	for (locationName in this.mapDataJSON){
+
+	// 		// generate unique name for map marker (checks mapMarkers array for duplicates);
+	// 		var markerName = generateUniqueMarkerName(this);
+
+	// 		if (markerName) {
+
+	// 			this.mapMarkers[markerName] = new MapMarker(markerName, icon, this, this.mapDataJSON);
+
+	// 			this.mapMarkers[markerName].show();
+
+	// 		}else{
+	// 			console.error("MapMarker for location: " + locationName + " was not added to map because of error.");
+	// 		}	
+
+	// 	}
+	// }
 
 	this.closeAllModals = function(){
 		for (var i = this.openedModals.length-1; i >= 0; i--) {
@@ -40,17 +54,19 @@ function Map(name, mapDataJSON){
 
 } // Map class end
 
-function MapMarker(name, icon, map, location_name, jsonfile){
+function MapMarker(name, icon, cordX, cordY, map){
 
 	this.map = map;
 	this.name = name;
 	this.icon = icon;
-	this.location = location_name;
-	this.dataJSON = jsonfile;
-	this.cordX = this.dataJSON[this.location]['coordinates']['x'];
-	this.cordY = this.dataJSON[this.location]['coordinates']['y'];
+	this.cordX = cordX;
+	this.cordY = cordY;
 	this.markerContainer = this.map.container; // jquery map marker container object
-	this.modal = new MarkerModal(this);
+	this.modal;
+
+	this.addModal = function(modalTitle, modalContent){
+		this.modal = new MarkerModal(modalTitle, modalContent, this);
+	}
 	
 	this.activate = function(){
 		jQuery('[data-marker-name="' + this.name + '"]').addClass('active');
@@ -70,7 +86,7 @@ function MapMarker(name, icon, map, location_name, jsonfile){
 	}
 
 	this.generateMarker = function(){
-		output = '<div class="KBmap__marker" data-marker-name="'+this.name+'" data-location="'+this.location+'" style="left: '+this.cordX+'%; top: '+this.cordY+'%"><img src="'+this.icon+'" alt="'+this.location+'"></div>'
+		output = '<div class="KBmap__marker" data-marker-name="'+this.name+'" style="left: '+this.cordX+'%; top: '+this.cordY+'%"><img src="'+this.icon+'" alt="'+this.location+'"></div>'
 
 		return output;
 	}
@@ -95,32 +111,19 @@ function MapMarker(name, icon, map, location_name, jsonfile){
 
 } // MapMarker class end
 
-function MarkerModal(linkedMapMarker){
+function MarkerModal(modalTitle, content, linkedMapMarker){
 
+	this.title = modalTitle;
 	this.linkedMapMarker = linkedMapMarker; // linked to modal map marker object
-	this.contentitems = this.linkedMapMarker.dataJSON[this.linkedMapMarker.location]['contentitems'];
+	this.content = content;
 	this.positionedElemOffset = null;
 	
 	self = this;
 
 	this.generateModal = function(){
-		output = '<div  class="KBmap__markerContent"><div class="KBmap__markerClose"><i class="fa fa-times" aria-hidden="true"></i></div><h3 class="KBmap__markerTitle">' + this.linkedMapMarker.location + '</h3>';
+		output = '<div  class="KBmap__markerContent"><div class="KBmap__markerClose"><i class="fa fa-times" aria-hidden="true"></i></div><h3 class="KBmap__markerTitle">' + this.title + '</h3>';
 
-		for (contentitem in this.contentitems){
-			output += '<div class="KBmap__markerContentItem">' + '<div class="KBmap__markerContentRow">' + contentitem + '</div>';
-
-			for (contentitem_field in this.contentitems[contentitem]) {
-
-				// if field is not empty show it
-				if (this.contentitems[contentitem][contentitem_field]) {
-					output += '<div class="KBmap__markerContentRow">' + contentitem_field + ": " + this.contentitems[contentitem][contentitem_field] + "</div>";
-				}
-				
-			}
-
-			output += '</div>';
-
-		}
+		output += '<div class="KBmap__markerContentItem">' + this.content + '</div>';
 
 		output += '</div>';
 
