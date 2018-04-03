@@ -1,0 +1,47 @@
+{
+	"mapMarker1": {
+		"cordX": "54.25",
+		"cordY": "18.59",
+		"icon": "map-marker.svg",
+		"modal": {
+			"title": "Kaer Morhen",
+			"content": "<p>Vesemir<br />email: vesemir@kaermorhen.pl<br />tel: 942 422 144</p>"
+		}
+	},
+	"mapMarker2": {
+		"cordX": "32.15",
+		"cordY": "53.34",
+		"icon": "map-marker.svg",
+		"modal": {
+			"title": "Wyzima",
+			"content": "<p>Król Foltest<br />email: foltest@temeria.pl<br />tel: 654 342 674</p>"
+		}
+	},
+	"mapMarker3": {
+		"cordX": "49.93",
+		"cordY": "53.93",
+		"icon": "map-marker.svg",
+		"modal": {
+			"title": "Vengerberg",
+			"content": "<p>Yennefer<br />email: yen@lozaczarodziejek.pl<br />tel: 864 464 743</p>"
+		}
+	},
+	"mapMarker4": {
+		"cordX": "19.85",
+		"cordY": "72.73",
+		"icon": "map-marker.svg",
+		"modal": {
+			"title": "Cintra",
+			"content": "<p>Cirilla<br />email: ciri@cintra.pl<br />tel: 764 345 325</p>"
+		}
+	},
+	"mapMarker5": {
+		"cordX": "24.22",
+		"cordY": "41.74",
+		"icon": "map-marker.svg",
+		"modal": {
+			"title": "Novigrad",
+			"content": "<p>Chapelle<br />email: chapelle@novigrad.pl<br />tel: 523 753 853</p>"
+		}
+	}
+}

@@ -1,40 +1,76 @@
 // array storing all currently added maps;
 var addedKBmaps = [];
 
-function Map(name, mapDataJSON){
+function Map(name){
 
 
 	this.name = name;
 	this.mapMarkers = [];
-	this.addedMarkers = []; // array for markers added to map (and visible on map)
 	this.maxZindex = 2;
 	this.openedModals = [];
 	this.container =  jQuery("#"+ this.name + " .KBmap__mapContainer .KBmap__mapHolder");
-	this.mapDataJSON = mapDataJSON;
+	this.mapDataJSON;
 
-	this.getMarker = function(marker){
-		return getKBmapMarker(this, marker);
+	this.addMarker = function(icon, cordX, cordY, name){
+
+		var markerName;
+
+		// if name param is specified use it and check for duplicates in mapMarkers array else generate name
+		if(typeof name !== 'undefined'){
+
+			markerName = generateUniqueMarkerName(this, name);
+		
+		}else{
+
+			markerName = generateUniqueMarkerName(this);
+		
+		}
+
+		this.mapMarkers[markerName] = new MapMarker(markerName, icon, cordX, cordY, this);
+
 	}
 
-	this.showAllMapMarkers = function(icon){
-		var icon = icon;
+	this.removeMarker = function(mapMarker){
+		this.mapMarkers[mapMarker].removeMarker();
+	}
 
-		for (locationName in this.mapDataJSON){
+	this.importJSON = function(mapDataJSON){
 
-			// generate unique name for map marker (checks addedMarkers array for duplicates);
-			var markerName = generateUniqueMarkerName(this);
+		this.mapDataJSON = mapDataJSON;
 
-			if (markerName) {
+		for (importedMarkerName in this.mapDataJSON){
 
-				this.mapMarkers[markerName] = new MapMarker(markerName, icon, this, locationName, this.mapDataJSON);
+			// add new marker
+			this.addMarker(this.mapDataJSON[importedMarkerName].icon, this.mapDataJSON[importedMarkerName].cordX, this.mapDataJSON[importedMarkerName].cordY, importedMarkerName);
 
-				this.mapMarkers[markerName].show();
-
-			}else{
-				console.error("MapMarker for location: " + locationName + " was not added to map because of error.");
-			}	
+			// add modal to new added marker if specified in json
+			if (this.mapDataJSON[importedMarkerName]["modal"] && this.mapDataJSON[importedMarkerName]["modal"].title && this.mapDataJSON[importedMarkerName]["modal"].content) {
+;
+				this.mapMarkers[importedMarkerName].addModal(this.mapDataJSON[importedMarkerName]["modal"].title, this.mapDataJSON[importedMarkerName]["modal"].content);
+				
+			};
 
 		}
+	}
+
+	this.generateJSON = function(){
+		// function code here
+	}
+
+	this.showAllMapMarkers = function(){
+
+		var count = 0;
+		
+		for (mapMarker in this.mapMarkers){
+
+			if (mapMarker != "removeElement") {
+
+				this.mapMarkers[mapMarker].show();
+	
+			};
+
+		}
+
 	}
 
 	this.closeAllModals = function(){
@@ -45,17 +81,19 @@ function Map(name, mapDataJSON){
 
 } // Map class end
 
-function MapMarker(name, icon, map, location_name, jsonfile){
+function MapMarker(name, icon, cordX, cordY, map){
 
 	this.map = map;
 	this.name = name;
 	this.icon = icon;
-	this.location = location_name;
-	this.dataJSON = jsonfile;
-	this.cordX = this.dataJSON[this.location]['coordinates']['x'];
-	this.cordY = this.dataJSON[this.location]['coordinates']['y'];
+	this.cordX = cordX;
+	this.cordY = cordY;
 	this.markerContainer = this.map.container; // jquery map marker container object
-	this.modal = new MarkerModal(this);
+	this.modal;
+
+	this.addModal = function(modalTitle, modalContent){
+		this.modal = new MarkerModal(modalTitle, modalContent, this);
+	}
 	
 	this.activate = function(){
 		jQuery('[data-marker-name="' + this.name + '"]').addClass('active');
@@ -75,7 +113,7 @@ function MapMarker(name, icon, map, location_name, jsonfile){
 	}
 
 	this.generateMarker = function(){
-		output = '<div class="KBmap__marker" data-marker-name="'+this.name+'" data-location="'+this.location+'" style="left: '+this.cordX+'%; top: '+this.cordY+'%"><img src="'+this.icon+'" alt="'+this.location+'"></div>'
+		output = '<div class="KBmap__marker" data-marker-name="'+this.name+'" style="left: '+this.cordX+'%; top: '+this.cordY+'%"><img src="'+this.icon+'" alt="'+this.location+'"></div>'
 
 		return output;
 	}
@@ -83,7 +121,8 @@ function MapMarker(name, icon, map, location_name, jsonfile){
 	this.removeMarker = function(){
 
 		jQuery('[data-marker-name="'+this.name+'"]').remove();
-		this.map.addedMarkers.removeElement(this);
+
+		delete this.map.mapMarkers[this.name];
 
 		this.map.openedModals.removeElement(this.modal);
 	}
@@ -92,40 +131,24 @@ function MapMarker(name, icon, map, location_name, jsonfile){
 
 		this.markerContainer.append(this.generateMarker());
 
-		// add currently generated marker to array with all generated markers;
-		this.map.addedMarkers.push(this);
-
 	}
 
 
 } // MapMarker class end
 
-function MarkerModal(linkedMapMarker){
+function MarkerModal(modalTitle, content, linkedMapMarker){
 
+	this.title = modalTitle;
 	this.linkedMapMarker = linkedMapMarker; // linked to modal map marker object
-	this.contentitems = this.linkedMapMarker.dataJSON[this.linkedMapMarker.location]['contentitems'];
+	this.content = content;
 	this.positionedElemOffset = null;
 	
 	self = this;
 
 	this.generateModal = function(){
-		output = '<div  class="KBmap__markerContent"><div class="KBmap__markerClose"><i class="fa fa-times" aria-hidden="true"></i></div><h3 class="KBmap__markerTitle">' + this.linkedMapMarker.location + '</h3>';
+		output = '<div  class="KBmap__markerContent"><div class="KBmap__markerClose"><i class="fa fa-times" aria-hidden="true"></i></div><h3 class="KBmap__markerTitle">' + this.title + '</h3>';
 
-		for (contentitem in this.contentitems){
-			output += '<div class="KBmap__markerContentItem">' + '<div class="KBmap__markerContentRow">' + contentitem + '</div>';
-
-			for (contentitem_field in this.contentitems[contentitem]) {
-
-				// if field is not empty show it
-				if (this.contentitems[contentitem][contentitem_field]) {
-					output += '<div class="KBmap__markerContentRow">' + contentitem_field + ": " + this.contentitems[contentitem][contentitem_field] + "</div>";
-				}
-				
-			}
-
-			output += '</div>';
-
-		}
+		output += '<div class="KBmap__markerContentItem">' + this.content + '</div>';
 
 		output += '</div>';
 
@@ -248,21 +271,32 @@ function generateName(namebase){
 	return namebase+Math.floor((Math.random() * 1000) + 1);
 }
 
-function generateUniqueMarkerName(map){
+function generateUniqueMarkerName(map, name){
 
 	var namebase = 'mapMarker';
-	var objname = generateName(namebase);
+	var objname;
+
+	// check if param name is specified, if so use its name and check for duplicates
+	if(typeof name !== 'undefined'){
+
+		objname = name;
+	
+	}else{
+
+		objname = generateName(namebase);
+
+	}
 
 	var infiniteLoopCheck = 0;
 
-	while (map.addedMarkers.indexOf(window[objname])!= -1) {
+	while (map.mapMarkers[objname]) {
 
 		objname = generateName(namebase);
 
 		infiniteLoopCheck++;
 
-		if (infiniteLoopCheck > addedMarkers.length * 100) {
-			console.error('Can not generate unique name for MapMarker object. Change max number in MapMarker object name [function generateName()]. Default max: 1000');
+		if (infiniteLoopCheck > 1000) {
+			console.error('After 10000 tries couldnt generate unique name for MapMarker object. Change max number in MapMarker object name [function generateName()]. Default max: 1000');
 			return false;
 		};
 	}
@@ -276,16 +310,6 @@ function getKBmap(name){
 	for (var i=0, iLen=addedKBmaps.length; i<iLen; i++) {
 
 		if (addedKBmaps[i].name == name) return addedKBmaps[i];
-
-	}
-
-}
-
-function getKBmapMarker(map, marker){
-
-	for (var i=0, iLen=map.addedMarkers.length; i<iLen; i++) {
-
-		if (map.addedMarkers[i].name == marker) return map.addedMarkers[i];
 
 	}
 
@@ -314,7 +338,7 @@ jQuery( document ).ready(function() {
 		var clickedMarkerName = jQuery(this).parent().attr('data-marker-name');
 		var clickedMarkerMapName = jQuery(this).parent().parent().parent().parent().attr('id');
 
-		jQuery.event.trigger('markerClick', getKBmapMarker(getKBmap(clickedMarkerMapName), clickedMarkerName));
+		jQuery.event.trigger('markerClick', getKBmap(clickedMarkerMapName).mapMarkers[clickedMarkerName]);
 
 	});
 
@@ -326,7 +350,7 @@ jQuery( document ).ready(function() {
 		var clickedMarkerName = jQuery(this).parent().parent().attr('data-marker-name');
 		var clickedMarkerMapName = jQuery(this).parent().parent().parent().parent().parent().attr('id');
 
-		jQuery.event.trigger('markerClose', getKBmapMarker(getKBmap(clickedMarkerMapName), clickedMarkerName));
+		jQuery.event.trigger('markerClose', getKBmap(clickedMarkerMapName).mapMarkers[clickedMarkerName]);
 
 	});
 
@@ -337,7 +361,7 @@ jQuery( document ).ready(function() {
 		var mapMarkerParent = jQuery(this).parent().attr('data-marker-name');
 		var mapMarkerMapParent= jQuery(this).parent().parent().parent().parent().attr('id');
 
-		getKBmapMarker(getKBmap(mapMarkerMapParent), mapMarkerParent).setCurrent();
+		getKBmap(mapMarkerMapParent).mapMarkers[mapMarkerParent].setCurrent()
 
 	});
 

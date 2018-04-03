@@ -1,0 +1,112 @@
+/*
+ *
+ *  // Map Markers CSS
+ *
+ */
+.KBmap__mapContainer {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center; }
+
+.KBmap__mapHolder {
+  display: inline-block;
+  position: relative; }
+  .KBmap__mapHolder svg {
+    max-width: 100%; }
+.KBmap__mapHolder img{
+  max-width: 100%;
+  width: 100%;
+}
+
+@-webkit-keyframes mapMarkerAnimation {
+  0% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px); }
+  50% {
+    -webkit-transform: translateY(-6px);
+            transform: translateY(-6px); }
+  100% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px); } }
+
+@keyframes mapMarkerAnimation {
+  0% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px); }
+  50% {
+    -webkit-transform: translateY(-6px);
+            transform: translateY(-6px); }
+  100% {
+    -webkit-transform: translateY(0px);
+            transform: translateY(0px); } }
+
+.KBmap__marker {
+  position: absolute;
+  -webkit-transform: translate(-50%, -100%);
+          transform: translate(-50%, -100%);
+  top: 42%;
+  left: 69%;
+  z-index: 1; }
+  .KBmap__marker.current {
+    z-index: 2; }
+  .KBmap__marker img {
+    cursor: pointer;
+    position: relative;
+    z-index: 3; }
+    .KBmap__marker img:hover {
+      -webkit-animation-name: mapMarkerAnimation;
+              animation-name: mapMarkerAnimation;
+      -webkit-animation-duration: .5s;
+              animation-duration: .5s;
+      -webkit-animation-iteration-count: infinite;
+              animation-iteration-count: infinite; }
+
+.KBmap__markerContent {
+  width: 320px;
+  background-color: #9ea18e;
+  display: inline-block;
+  border-radius: 15px;
+  padding: 25px;
+  padding-bottom: 35px;
+  -webkit-box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.15);
+          box-shadow: 0px 0px 15px 3px rgba(0, 0, 0, 0.15);
+  position: absolute;
+  bottom: 49%;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;         /* Opera/IE 8+ */
+  z-index: 1; }
+  .KBmap__markerContent .KBmap__markerTitle {
+        margin-top: 0px;
+    margin-bottom: .5em; }
+
+.KBmap__markerContentItem {
+}
+
+.KBmap__markerContentItem p{
+  margin-bottom: .5em;
+  margin-top: 0px;
+}
+
+.KBmap__markerClose {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  color: #231f20; }
+
+.KBmap_cords {
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+  background-color: #e7b786;
+  border: 2px solid #56270c;
+  padding: 2px 5px;
+  pointer-events: none;
+}
