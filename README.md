@@ -1,9 +1,8 @@
 # KBmapMarkers
 JavaScript library for displaying maps (or other images) with custom map markers (or other icons) and on marker click opens their description in modal.
 
-### Version 2.0.0
-
-This version adds support for multiple maps on single web page.
+## DEMO:
+[Open demo] (https://mrkariox.github.io/KBmapMarkers/)
 
 ## How to use?
 1. First add jQuery library to your document (tested on jquery-3.3.1).
