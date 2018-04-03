@@ -87,7 +87,12 @@
     margin-bottom: .5em; }
 
 .KBmap__markerContentItem {
-  margin-bottom: .5em; }
+}
+
+.KBmap__markerContentItem p{
+  margin-bottom: .5em;
+  margin-top: 0px;
+}
 
 .KBmap__markerClose {
   position: absolute;

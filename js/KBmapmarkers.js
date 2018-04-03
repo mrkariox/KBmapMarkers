@@ -9,42 +9,69 @@ function Map(name){
 	this.maxZindex = 2;
 	this.openedModals = [];
 	this.container =  jQuery("#"+ this.name + " .KBmap__mapContainer .KBmap__mapHolder");
-	this.mapDataJSON = mapDataJSON;
+	this.mapDataJSON;
 
-	this.addMarker = function(icon, cordX, cordY){
+	this.addMarker = function(icon, cordX, cordY, name){
 
-		var markerName = generateUniqueMarkerName(this);
+		var markerName;
+
+		// if name param is specified use it and check for duplicates in mapMarkers array else generate name
+		if(typeof name !== 'undefined'){
+
+			markerName = generateUniqueMarkerName(this, name);
+		
+		}else{
+
+			markerName = generateUniqueMarkerName(this);
+		
+		}
 
 		this.mapMarkers[markerName] = new MapMarker(markerName, icon, cordX, cordY, this);
 
 	}
 
+	this.removeMarker = function(mapMarker){
+		this.mapMarkers[mapMarker].removeMarker();
+	}
+
 	this.importJSON = function(mapDataJSON){
-		for (elem in mapDataJSON){
-			console.log(mapDataJSON[elem].icon);
+
+		this.mapDataJSON = mapDataJSON;
+
+		for (importedMarkerName in this.mapDataJSON){
+
+			// add new marker
+			this.addMarker(this.mapDataJSON[importedMarkerName].icon, this.mapDataJSON[importedMarkerName].cordX, this.mapDataJSON[importedMarkerName].cordY, importedMarkerName);
+
+			// add modal to new added marker if specified in json
+			if (this.mapDataJSON[importedMarkerName]["modal"] && this.mapDataJSON[importedMarkerName]["modal"].title && this.mapDataJSON[importedMarkerName]["modal"].content) {
+;
+				this.mapMarkers[importedMarkerName].addModal(this.mapDataJSON[importedMarkerName]["modal"].title, this.mapDataJSON[importedMarkerName]["modal"].content);
+				
+			};
+
 		}
 	}
 
-	// this.showAllMapMarkers = function(icon){
-	// 	var icon = icon;
+	this.generateJSON = function(){
+		// function code here
+	}
 
-	// 	for (locationName in this.mapDataJSON){
+	this.showAllMapMarkers = function(){
 
-	// 		// generate unique name for map marker (checks mapMarkers array for duplicates);
-	// 		var markerName = generateUniqueMarkerName(this);
+		var count = 0;
+		
+		for (mapMarker in this.mapMarkers){
 
-	// 		if (markerName) {
+			if (mapMarker != "removeElement") {
 
-	// 			this.mapMarkers[markerName] = new MapMarker(markerName, icon, this, this.mapDataJSON);
+				this.mapMarkers[mapMarker].show();
+	
+			};
 
-	// 			this.mapMarkers[markerName].show();
+		}
 
-	// 		}else{
-	// 			console.error("MapMarker for location: " + locationName + " was not added to map because of error.");
-	// 		}	
-
-	// 	}
-	// }
+	}
 
 	this.closeAllModals = function(){
 		for (var i = this.openedModals.length-1; i >= 0; i--) {
@@ -94,7 +121,8 @@ function MapMarker(name, icon, cordX, cordY, map){
 	this.removeMarker = function(){
 
 		jQuery('[data-marker-name="'+this.name+'"]').remove();
-		this.map.mapMarkers.removeElement(this);
+
+		delete this.map.mapMarkers[this.name];
 
 		this.map.openedModals.removeElement(this.modal);
 	}
@@ -102,9 +130,6 @@ function MapMarker(name, icon, cordX, cordY, map){
 	this.show = function(){
 
 		this.markerContainer.append(this.generateMarker());
-
-		// add currently generated marker to array with all generated markers;
-		this.map.mapMarkers.push(this);
 
 	}
 
@@ -246,21 +271,32 @@ function generateName(namebase){
 	return namebase+Math.floor((Math.random() * 1000) + 1);
 }
 
-function generateUniqueMarkerName(map){
+function generateUniqueMarkerName(map, name){
 
 	var namebase = 'mapMarker';
-	var objname = generateName(namebase);
+	var objname;
+
+	// check if param name is specified, if so use its name and check for duplicates
+	if(typeof name !== 'undefined'){
+
+		objname = name;
+	
+	}else{
+
+		objname = generateName(namebase);
+
+	}
 
 	var infiniteLoopCheck = 0;
 
-	while (map.mapMarkers.indexOf(window[objname])!= -1) {
+	while (map.mapMarkers[objname]) {
 
 		objname = generateName(namebase);
 
 		infiniteLoopCheck++;
 
-		if (infiniteLoopCheck > mapMarkers.length * 100) {
-			console.error('Can not generate unique name for MapMarker object. Change max number in MapMarker object name [function generateName()]. Default max: 1000');
+		if (infiniteLoopCheck > 1000) {
+			console.error('After 10000 tries couldnt generate unique name for MapMarker object. Change max number in MapMarker object name [function generateName()]. Default max: 1000');
 			return false;
 		};
 	}
