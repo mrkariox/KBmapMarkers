@@ -141,7 +141,8 @@ function MarkerModal(modalTitle, content, linkedMapMarker){
 	this.title = modalTitle;
 	this.linkedMapMarker = linkedMapMarker; // linked to modal map marker object
 	this.content = content;
-	this.positionedElemOffset = null;
+	this.positionedElemOffsetX = null;
+	this.positionedElemOffsetY = null;
 	
 	self = this;
 
@@ -208,6 +209,7 @@ function MarkerModal(modalTitle, content, linkedMapMarker){
 	this.clearPosition = function(){
 
 		$markerContentWidth = jQuery('[data-marker-name="'+ this.linkedMapMarker.name +'"]').find('.KBmap__markerContent').outerWidth();
+		$markerContentHeight = jQuery('[data-marker-name="'+ this.linkedMapMarker.name +'"]').find('.KBmap__markerContent').outerHeight();
 
 		// if modal content block width is grater than window width set modal with to window width
 		if ($markerContentWidth > jQuery(window).outerWidth()) {
@@ -215,15 +217,20 @@ function MarkerModal(modalTitle, content, linkedMapMarker){
 		}
 
 		$markerWidth = jQuery('.KBmap__marker').outerWidth();
+		$markerHeight = jQuery('.KBmap__marker').outerHeight();
 
 		$positionedElem = jQuery('[data-marker-name="'+ this.linkedMapMarker.name +'"]').find('.KBmap__markerContent');
 
-		self.positionedElemOffset = -($markerContentWidth/2)+$markerWidth/2;
+		self.positionedElemOffsetX = -($markerContentWidth/2)+$markerWidth/2;
+		self.positionedElemOffsetY = $markerHeight/2;
 
 		$positionedElem.css({
-			'left': self.positionedElemOffset,
+			'left': self.positionedElemOffsetX,
+			'bottom': self.positionedElemOffsetY,
 			'max-width': jQuery(window).outerWidth()
 		});	
+
+		console.log(self.positionedElemOffsetY);
 
 		// if modal is off screen changes its left/right position until modal is fully on screen
 		whileOffScreen();
@@ -232,21 +239,35 @@ function MarkerModal(modalTitle, content, linkedMapMarker){
 
 	function whileOffScreen(){
 
+		// while is overflowing screen on the left
 		while (($positionedElem.offset().left < 0)&(!($positionedElem.offset().left + $markerContentWidth > jQuery(window).outerWidth()))) {
-			self.positionedElemOffset += 1;
+			self.positionedElemOffsetX += 1;
 			$positionedElem.css({
-				'left': self.positionedElemOffset,
+				'left': self.positionedElemOffsetX,
+				'bottom': self.positionedElemOffsetY,
 				'max-width': jQuery(window).outerWidth()-1
 			});
 		}
 
+		// while is overflowing screen on the rifht
 		while (($positionedElem.offset().left + $markerContentWidth > jQuery(window).outerWidth())&(!($positionedElem.offset().left < 0))) {
-			self.positionedElemOffset += -1;
+			self.positionedElemOffsetX += -1;
 			$positionedElem.css({
-				'left': self.positionedElemOffset,
+				'left': self.positionedElemOffsetX,
+				'bottom': self.positionedElemOffsetY,
 				'max-width': jQuery(window).outerWidth()-1
 			});
 		}	
+
+		// while is overflowing srceen on top
+		while($positionedElem.offset().top<0){
+			self.positionedElemOffsetY += -1;
+			$positionedElem.css({
+				'left': self.positionedElemOffsetX,
+				'bottom': self.positionedElemOffsetY,
+				'max-width': jQuery(window).outerWidth()-1
+			});
+		}
 
 	}
 
