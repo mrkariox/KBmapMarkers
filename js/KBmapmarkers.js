@@ -109,7 +109,7 @@ function MapMarker(name, icon, cordX, cordY, map){
 	}
 
 	this.unsetCurrent = function(){
-		jQuery('[data-marker-name="'+ this.name +'"]').css('z-index', "2");
+		jQuery('[data-marker-name="'+ this.name +'"]').css('z-index', "1");
 	}
 
 	this.generateMarker = function(){
