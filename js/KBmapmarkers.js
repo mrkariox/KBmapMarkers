@@ -230,8 +230,6 @@ function MarkerModal(modalTitle, content, linkedMapMarker){
 			'max-width': jQuery(window).outerWidth()
 		});	
 
-		console.log(self.positionedElemOffsetY);
-
 		// if modal is off screen changes its left/right position until modal is fully on screen
 		whileOffScreen();
 
